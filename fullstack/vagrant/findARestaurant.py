@@ -20,6 +20,7 @@ def findARestaurant(mealType, location):
     result = json.loads(h.request(url, 'GET')[1])
     print result
 
+
 # 1. Use getGeocodeLocation to get the latitude and longitude coordinates of the location string.
 
 # 2.  Use foursquare API to find a nearby restaurant with the latitude, longitude, and mealType strings.
