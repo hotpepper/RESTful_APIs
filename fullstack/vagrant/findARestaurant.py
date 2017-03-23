@@ -15,10 +15,26 @@ foursquare_client_secret = "XUYML4UJGSFCWZCZOCYWXX2PUKR4AUTUEQZXN2KR3MTSMQDI"
 def findARestaurant(mealType, location):
     lat, long = getGeocodeLocation(location)
     url = ('https://api.foursquare.com/v2/venues/search?client_id=%s&client_secret=%s&v=20130815&ll=%s,%s&query=%s' % (
-    foursquare_client_id, foursquare_client_secret, lat, long, mealType))
+        foursquare_client_id, foursquare_client_secret, lat, long, mealType))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
-    print result
+    return process_output(result)
+
+def process_output(result):
+    default_img = 'https://image.flaticon.com/icons/svg/98/98017.svg'
+    d = dict()
+    first = result['response']['venues'][0]
+    d['name'] = first['name']
+    d['address'] = first['location']['formattedAddress']
+    if not first['categories'][0]['icon']:
+        d['image'] = default_img
+    else:
+        d['image'] = first['categories'][0]['icon']['prefix']+first['categories'][0]['icon']['suffix']
+    return d
+
+
+
+
 
 
 # 1. Use getGeocodeLocation to get the latitude and longitude coordinates of the location string.
@@ -32,7 +48,7 @@ def findARestaurant(mealType, location):
 # 6. If no image is available, insert default a image url
 # 7. Return a dictionary containing the restaurant name, address, and image url
 if __name__ == '__main__':
-    findARestaurant("Pizza", "Tokyo, Japan")
+    x = findARestaurant("Pizza", "Tokyo, Japan")
     findARestaurant("Tacos", "Jakarta, Indonesia")
     findARestaurant("Tapas", "Maputo, Mozambique")
     findARestaurant("Falafel", "Cairo, Egypt")
